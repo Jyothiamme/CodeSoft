@@ -1,0 +1,109 @@
+## CREDIT CARD FRAUD
+
+DETECTION
+Great project! Let’s walk through building a Credit Card Fraud Detection model using the dataset you mentioned from Kaggle:
+# 📦 Kaggle Dataset - Credit Card Fraud Detection
+
+We'll cover:
+
+Loading & exploring the data
+
+Data preprocessing
+
+Model building with Logistic Regression, Decision Trees, and Random Forests
+
+Evaluation using accuracy, precision, recall, F1-score
+
+Predicting fraud on new data
+
+# ✅ Step-by-Step Implementation in Python
+📦 1. Install Required Libraries
+pip install pandas numpy scikit-learn matplotlib seaborn
+🧠 2. Load and Explore the Data
+import pandas as pd
+
+# Load the dataset
+df = pd.read_csv('fraud_detect.csv')  # Use actual file path or download and rename
+
+# Check the data
+print(df.head())
+print(df.info())
+print(df['isFraud'].value_counts())
+# ✅ Output will show:
+
+Total columns like step, amount, type, oldbalanceOrg, etc.
+
+Imbalance in isFraud values (fraud is rare)
+
+# 📊 3. Visualize Class Imbalance
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+sns.countplot(x='isFraud', data=df)
+plt.title("Fraudulent vs Legitimate Transactions")
+plt.show()
+# ⚙️ 4. Preprocess the Data
+Encode categorical features (like type)
+
+Drop irrelevant columns if needed (like nameOrig, nameDest)
+
+# Encode the 'type' column
+df = pd.get_dummies(df, columns=['type'], drop_first=True)
+
+# Drop unnecessary columns
+df.drop(['nameOrig', 'nameDest'], axis=1, inplace=True)
+
+# Features and Target
+X = df.drop('isFraud', axis=1)
+y = df['isFraud']
+# 🔀 5. Train/Test Split
+from sklearn.model_selection import train_test_split
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=42, stratify=y)
+# 🧪 6. Train Models
+Logistic Regression
+from sklearn.linear_model import LogisticRegression
+
+lr = LogisticRegression(max_iter=1000)
+lr.fit(X_train, y_train)
+Decision Tree
+from sklearn.tree import DecisionTreeClassifier
+
+dt = DecisionTreeClassifier()
+dt.fit(X_train, y_train)
+Random Forest
+from sklearn.ensemble import RandomForestClassifier
+
+rf = RandomForestClassifier(n_estimators=100)
+rf.fit(X_train, y_train)
+# 📈 7. Evaluate Models
+from sklearn.metrics import classification_report, confusion_matrix
+
+def evaluate(model, X_test, y_test, name):
+    print(f"--- {name} ---")
+    y_pred = model.predict(X_test)
+    print(classification_report(y_test, y_pred))
+    print(confusion_matrix(y_test, y_pred))
+
+evaluate(lr, X_test, y_test, "Logistic Regression")
+evaluate(dt, X_test, y_test, "Decision Tree")
+evaluate(rf, X_test, y_test, "Random Forest")
+# ✅ Output example (Random Forest):
+
+markdown
+--- Random Forest ---
+              precision    recall  f1-score   support
+
+           0       1.00      1.00      1.00    127027
+           1       0.97      0.86      0.91       2045
+
+    accuracy                           0.99    129072
+   macro avg       0.98      0.93      0.96    129072
+weighted avg       0.99      0.99      0.99    129072
+# 🔍 8. Predict on New Sample Transaction
+sample = X_test.iloc[0]
+true_label = y_test.iloc[0]
+
+predicted = rf.predict([sample])
+print("Predicted:", predicted)
+print("Actual:", true_label)
