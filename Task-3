@@ -1,0 +1,112 @@
+# Spam Detection
+Awesome project idea! Let’s walk through building an SMS Spam Detection AI model using the SMS Spam Collection Dataset from Kaggle:
+# 📦 Kaggle Dataset - SMS Spam Collection
+
+We’ll use:
+
+TF-IDF for feature extraction
+
+Classifiers: Naive Bayes, Logistic Regression, Support Vector Machine (SVM)
+
+Evaluate with accuracy, precision, recall, and F1-score
+
+# ✅ Step-by-Step Implementation with Code and Sample Output
+# 📦 1. Install and Import Libraries
+pip install pandas scikit-learn nltk
+import pandas as pd
+import numpy as np
+import re
+import nltk
+from sklearn.model_selection import train_test_split
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.linear_model import LogisticRegression
+from sklearn.svm import LinearSVC
+from sklearn.metrics import classification_report, confusion_matrix
+
+nltk.download('stopwords')
+from nltk.corpus import stopwords
+
+stop_words = set(stopwords.words('english'))
+# 📂 2. Load and Explore the Dataset
+
+# Load the dataset
+df = pd.read_csv("spam.csv", encoding='latin-1')[['v1', 'v2']]
+df.columns = ['label', 'message']
+print(df.head())
+print(df['label'].value_counts())
+# ✅ Sample Output:
+
+  label                                            message
+0   ham  Go until jurong point, crazy.. Available only ...
+1   ham                      Ok lar... Joking wif u oni...
+2  spam  Free entry in 2 a wkly comp to win FA Cup fina...
+3   ham  U dun say so early hor... U c already then say...
+4   ham  Nah I don't think he goes to usf, he lives aro...
+
+ham     4825
+spam     747
+# 🧹 3. Clean and Preprocess Text
+def clean_text(text):
+    text = re.sub(r'[^a-zA-Z\s]', '', text)
+    text = text.lower()
+    return ' '.join([word for word in text.split() if word not in stop_words])
+
+df['clean_message'] = df['message'].apply(clean_text)
+# 🔠 4. Encode Labels
+df['label_num'] = df['label'].map({'ham': 0, 'spam': 1})
+# ✂️ 5. Split and Vectorize
+X = df['clean_message']
+y = df['label_num']
+
+# TF-IDF Vectorizer
+tfidf = TfidfVectorizer(max_features=3000)
+X_vec = tfidf.fit_transform(X)
+
+# Train/Test split
+X_train, X_test, y_train, y_test = train_test_split(X_vec, y, test_size=0.25, random_state=42)
+# 🧪 6. Train Models
+Naive Bayes
+nb = MultinomialNB()
+nb.fit(X_train, y_train)
+Logistic Regression
+lr = LogisticRegression(max_iter=1000)
+lr.fit(X_train, y_train)
+SVM (Linear)
+python
+Copy
+Edit
+svm = LinearSVC()
+svm.fit(X_train, y_train)
+# 📈 7. Evaluate All Models
+def evaluate(model, name):
+    y_pred = model.predict(X_test)
+    print(f"--- {name} ---")
+    print(classification_report(y_test, y_pred))
+    print(confusion_matrix(y_test, y_pred), "\n")
+
+evaluate(nb, "Naive Bayes")
+evaluate(lr, "Logistic Regression")
+evaluate(svm, "SVM")
+# ✅ Example Output (Naive Bayes):
+
+--- Naive Bayes ---
+              precision    recall  f1-score   support
+
+           0       0.98      0.99      0.99      1212
+           1       0.94      0.87      0.90       181
+
+    accuracy                           0.98      1393
+# 🔍 8. Predict a New Message
+def predict_message(msg, model):
+    msg_clean = clean_text(msg)
+    msg_vec = tfidf.transform([msg_clean])
+    prediction = model.predict(msg_vec)
+    return "Spam" if prediction[0] == 1 else "Ham"
+
+sample = "Congratulations! You've won a $1,000 Walmart gift card. Click here to claim."
+print("Prediction:", predict_message(sample, nb))
+#✅ Output:
+
+makefile
+Prediction: Spam
