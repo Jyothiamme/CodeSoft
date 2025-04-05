@@ -228,7 +228,7 @@ Multi-label classification (since a movie can belong to multiple genres)
 Realistic dataset simulation + model output
 
 # ✅ Step-by-Step Movie Genre Classifier with Example Output
-📦 1. Install and Import Libraries
+# 📦 1. Install and Import Libraries
 pip install pandas scikit-learn nltk
 import pandas as pd
 import re
@@ -280,7 +280,7 @@ df['clean_plot'] = df['plot'].apply(clean_text)
 # 🔠 4. TF-IDF Vectorization
 tfidf = TfidfVectorizer(max_features=1000)
 X = tfidf.fit_transform(df['clean_plot'])
-🎯 5. Encode Multi-Label Targets
+# 🎯 5. Encode Multi-Label Targets
 python
 Copy
 Edit
@@ -293,7 +293,7 @@ Genre Classes: ['Action' 'Adventure' 'Comedy' 'Drama' 'Family' 'Fantasy' 'Horror
 # 🔀 6. Train/Test Split
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=42)
-🤖 7. Train the Classifier (Logistic Regression)
+# 🤖 7. Train the Classifier (Logistic Regression)
 You can also switch to Naive Bayes or SVM.
 model = OneVsRestClassifier(LogisticRegression(max_iter=1000))
 model.fit(X_train, y_train)
