@@ -3,8 +3,8 @@
 # Mail : ammejyothi@gmail.com
 # CODESOFT Internship 
 # Course : Machine leanrning
-# Task-1 Create a machine learning model that can predict the genre of a
- ## movie based on its plot summary or other textual information.
+# Task-1 MOVIE GENRE
+CLASSIFICATION
 
 Absolutely! Let's walk through a detailed guide to building a machine learning model that predicts the genre of a movie based on its plot summary, using TF-IDF and classifiers like Naive Bayes, Logistic Regression, or Support Vector Machines (SVM).
 
